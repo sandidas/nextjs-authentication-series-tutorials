@@ -119,6 +119,27 @@ export const authOptions: NextAuthOptions = {
     ],
 
     callbacks: {
+
+        async signIn({ user }) {
+
+            const isActiveUser = await User.findOne({
+                email: user?.email
+            })
+            console.log('isActiveUser', isActiveUser)
+            if(isActiveUser?.active) {
+                console.log('Good User')
+                return true;
+            } else {
+                console.log('Bad User')
+                return false;
+            }
+        
+          //  console.log('Activity Status check', isActiveUser);
+            
+        },
+
+
+
         async jwt({ token, user, account }) {
             if (account) {
                 token.accessToken = account?.access_token
@@ -126,7 +147,7 @@ export const authOptions: NextAuthOptions = {
             let customData;
             if (user) {
 
-           
+
                 token.id = user?.id
                 const userNewData = user as ICustomDataOfUser;
 
